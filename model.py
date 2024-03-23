@@ -15,6 +15,8 @@ class Actor(nn.Module):
     def forward(self, s):
         s = F.relu(self.l1(s))
         s = F.relu(self.l2(s))
+        # 输出用的 tanh
+        # tanh 函数的输出范围为 [-1, 1]，这与许多动作空间的要求相符合。例如，如果动作是连续的，并且需要落在某个范围内（如 [-1, 1] 或 [0, 1]），那么使用 tanh 可以将输出映射到合适的范围内。
         a = F.tanh(self.l3(s))
         return a
 

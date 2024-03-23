@@ -360,6 +360,7 @@ class Env:
         return t_local, t_trans, t_edge, time_delay
 
     def get_state(self):
+        # 状态做了归一化
         self.state = np.append(self.mec_remaining_cal_cap / Max_MEC_Cal_Cap, self.loc_veh_list / self.ground_width)
         self.state = np.append(self.state, self.veh_task_data_list / max(self.veh_task_data_list))
         # self.state = np.append(self.state, self.block_flag_list)
@@ -380,6 +381,8 @@ class Env:
             self.loc_veh_list[i] = np.clip(self.loc_veh_list[i], 0, self.ground_width)
 
     def step(self, action):
+        # 将 tanh 输出（取值范围为[-1, 1]）重新缩放到[0, M] 的范围内：将 tanh 输出加上 1（使其范围变为[0, 2]），然后乘以 M（使其范围变为[0, 2 * M]）。
+        # 对重新缩放后的值进行四舍五入，得到最接近的整数值。将四舍五入后的值截断到[0, M] 的范围内，确保输出在指定的范围内。将截断后的值转换为整数类型，并返回结果。
 
         def tanh_to_int(tanh_output, M):
             # Rescale tanh output to [0, M]
@@ -449,6 +452,6 @@ class Env:
                 for veh_id in range(self.M):
                     # self.veh_task_data_list[veh_id] = np.random.randint(*self.task_data_size_range)
                     self.veh_task_data_list = np.random.randint(low=1 * MB, high=1000 * MB, size=self.M, dtype=np.int64)
-
+        # 奖励归一化
         reward = - (((cost - min_cost1) / min_cost1) + (cost - min_cost2) / min_cost2)
         return self.get_state(), reward, terminate, step_redo

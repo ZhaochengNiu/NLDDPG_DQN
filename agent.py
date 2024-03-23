@@ -24,6 +24,11 @@ class DDPG(object):
         a = self.actor(s).data.numpy().flatten()
         return a
 
+    # torch.tensor(s, dtype=torch.float)：将状态 s 转换为 PyTorch 的张量，并指定数据类型为浮点数。
+    # torch.unsqueeze(..., 0)：在张量的第 0 维度上添加一个额外的维度，这是因为通常情况下，神经网络的输入需要是一个批次（batch），因此需要添加一个批次维度。
+    # .data.numpy()：将预测结果转换为 NumPy 数组，这样可以更方便地进行后续处理。
+    # .flatten()：将 NumPy 数组展平为一维数组，以便于后续处理。
+
     def learn(self, batch_s, batch_a, batch_r, batch_dw, batch_s_):
 
         # Compute the target Q

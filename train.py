@@ -41,6 +41,10 @@ if __name__ == '__main__':
         episode += 1
         for i in range(hp.MAX_STEPS):
             a = agent.choose_action(s)
+            # (a + 1) / 2：将动作 a 的范围从[-1, 1] 映射到[0, 1]。
+            # np.random.normal((a + 1) / 2, 0.01)：对上述映射后的动作施加一个均值为(a + 1) / 2、标准差为 0.01 的正态分布噪声。
+            # np.clip(..., -1, 1)：将上一步得到的动作限制在范围[-1, 1] 内，即如果动作超出了该范围，则将其截断为 - 1 或 1。
+            # 这行代码的目的是给动作 a 添加一些随机噪声，以促进探索，增加环境的探索性。这对于强化学习中的探索 - 利用问题至关重要，有助于代理学习到更好的策略。
             # a = np.clip(np.random.normal((a + 1) / 2, 0.01), -1, 1)
             s_, r, done, redo = env.step(a)
             # with open("ar", 'a') as file:
@@ -61,6 +65,7 @@ if __name__ == '__main__':
                 # td_errors.append(td_error)
                 actor_losses.append(actor_loss)
                 critic_losses.append(critic_loss)
+                # 当step的值是50的倍数时，执行下面的代码。将主网络（Actor和Critic）的参数复制给目标网络，以实现参数的更新。这样可以确保目标网络的参数与主网络的参数保持一致，并且在一定程度上减少训练过程中的不稳定性。
                 # if step % 50 == 0:
                 #     agent.actor_target.load_state_dict(agent.actor.state_dict())
                 #     agent.critic_target.load_state_dict(agent.critic.state_dict())
