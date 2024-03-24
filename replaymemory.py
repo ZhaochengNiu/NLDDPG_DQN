@@ -36,5 +36,5 @@ class ReplayBuffer:
         reward = [self.reward[i] for i in indices]
         done = [self.done[i] for i in indices]
         next_state = [self.next_state[i] for i in indices]
-
+        # 转换成 tensor 然后放到网络里面
         return torch.tensor(state, dtype=torch.float), torch.tensor(action, dtype=torch.float), torch.tensor(reward, dtype=torch.float), torch.tensor(done, dtype=torch.int), torch.tensor(next_state, dtype=torch.float)
